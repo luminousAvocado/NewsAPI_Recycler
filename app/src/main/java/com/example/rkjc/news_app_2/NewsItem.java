@@ -9,64 +9,67 @@ import android.support.annotation.NonNull;
 @Entity(tableName = "news_item")
 public class NewsItem {
     @PrimaryKey(autoGenerate = true)
-    @NonNull
     @ColumnInfo(name = "id")
-    private int mId;
+    private int id;
 
     @NonNull
-    private String mAuthor;
-    private String mTitle;
-    private String mDescription;
-    private String mUrl;
-    private String mUrlToImage;
-    private String mPublishedAt;
+    private String author;
+    private String title;
+    private String description;
+    private String url;
+    private String urlToImage;
+    private String publishedAt;
 
-    public NewsItem(int id, String author, String title, String description, String url, String urltoimage, String publishedat) {
-        this.mId = id;
-        this.mAuthor = author;
-        this.mTitle = title;
-        this.mDescription = description;
-        this.mUrl = url;
-        this.mUrlToImage = urltoimage;
-        this.mPublishedAt = publishedat;
+    public NewsItem(int id, String author, String title, String description, String url, String urlToImage, String publishedAt) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.url = url;
+        this.urlToImage = urlToImage;
+        this.publishedAt = publishedAt;
     }
 
     @Ignore
-    public NewsItem(String author, String title, String description, String url, String urltoimage, String publishedat) {
-        this.mAuthor = author;
-        this.mTitle = title;
-        this.mDescription = description;
-        this.mUrl = url;
-        this.mUrlToImage = urltoimage;
-        this.mPublishedAt = publishedat;
+    public NewsItem(String author, String title, String description, String url, String urlToImage, String publishedAt) {
+        this.author = author;
+        this.title = title;
+        this.description = description;
+        this.url = url;
+        this.urlToImage = urlToImage;
+        this.publishedAt = publishedAt;
     }
 
-    public int getWord() {
-        return this.mId;
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getAuthor() {
-        return this.mAuthor;
+        return this.author;
     }
 
     public String getTitle() {
-        return this.mTitle;
+        return this.title;
     }
 
     public String getDescription() {
-        return this.mDescription;
+        return this.description;
     }
 
     public String getUrl() {
-        return this.mUrl;
+        return this.url;
     }
 
     public String getUrlToImage() {
-        return this.mUrlToImage;
+        return this.urlToImage;
     }
 
     public String getPublishedAt() {
-        return this.mPublishedAt;
+        return this.publishedAt;
     }
 
 

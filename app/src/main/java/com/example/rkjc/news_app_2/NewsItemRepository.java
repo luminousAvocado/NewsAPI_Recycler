@@ -36,10 +36,10 @@ public class NewsItemRepository {
 
     // EDIT
     public ArrayList<NewsItem> syncDb(Context context) {
-        ArrayList<NewsItem> result;
+        ArrayList<NewsItem> result = null;
         URL url = NetworkUtils.buildURL();
         newsApiRequest req = new newsApiRequest(mNewsItemDao);
-        newsApiRequest.execute(url);
+        req.execute(url);
 
         return result;
     }
@@ -50,13 +50,13 @@ public class NewsItemRepository {
     }
 
     // EDIT
-    private static class apiCall extends AsyncTask<URL, NewsItemDao, String> {
+    private static class newsApiRequest extends AsyncTask<URL, NewsItemDao, String> {
         String results = null;
         ArrayList<NewsItem> news = new ArrayList<>();
 
         private NewsItemDao mAsyncTaskDao;
 
-        apiCall(NewsItemDao dao) {
+        newsApiRequest(NewsItemDao dao) {
             mAsyncTaskDao = dao;
         }
 
@@ -75,6 +75,55 @@ public class NewsItemRepository {
                 mAsyncTaskDao.loadAllNewsItems();
             }
 
+            return null;
+        }
+
+        private ArrayList<NewsItem> getItem() {
+            return news;
+        }
+    }
+
+    // EDIT
+    private static class databaseASync extends AsyncTask<List<NewsItem>, Void, Void> {
+        private NewsItemDao mAsyncTaskDao;
+
+        databaseASync(NewsItemDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final List<NewsItem>... params) {
+            mAsyncTaskDao.loadAllNewsItems();
+            return null;
+        }
+    }
+
+    // EDIT
+    private static class insertAsyncTask extends AsyncTask<List<NewsItem>, Void, Void> {
+        private NewsItemDao mAsyncTaskDao;
+
+        insertAsyncTask(NewsItemDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final List<NewsItem>... params) {
+            mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    // EDIT
+    private static class clearAllAsyncTask extends AsyncTask<List<NewsItem>, Void, Void> {
+        private NewsItemDao mAsyncTaskDao;
+
+        clearAllAsyncTask(NewsItemDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final List<NewsItem>... params) {
+            mAsyncTaskDao.clearAll();
             return null;
         }
     }
