@@ -8,21 +8,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class JsonUtils {
-
-    public static ArrayList<NewsItem> parseNews(String JSONString){
+    public static ArrayList<NewsItem> parseNews(String jsonResult){
         ArrayList<NewsItem> newsList = new ArrayList<>();
-        try {
-            JSONObject mainJSONObject = new JSONObject(JSONString);
-            JSONArray items = mainJSONObject.getJSONArray("articles");
+        try{
+            JSONObject mainJSONObject = new JSONObject(jsonResult);
+            JSONArray items = mainJSONObject.getJSONArray(("articles"));
 
-            for(int i = 0; i < items.length(); i++){
+            for(int i =0; i < items.length(); i++){
                 JSONObject item = items.getJSONObject(i);
                 newsList.add(new NewsItem(item.getString("author"), item.getString("title"), item.getString("description"), item.getString("url"), item.getString("urlToImage"), item.getString("publishedAt")));
             }
-        } catch (JSONException e) {
+        } catch(JSONException e){
             e.printStackTrace();
         }
-
         return newsList;
     }
 }
