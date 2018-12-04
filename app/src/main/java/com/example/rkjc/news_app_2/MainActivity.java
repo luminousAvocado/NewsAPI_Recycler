@@ -31,9 +31,11 @@ public class MainActivity extends AppCompatActivity {
     private NewsRecyclerViewAdapter mAdapter;
     private ArrayList<NewsItem> news = new ArrayList<>();
     private NewsItemViewModel mNewsItemViewModel;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: Called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
