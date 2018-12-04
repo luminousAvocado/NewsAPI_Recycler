@@ -8,11 +8,11 @@ import android.support.annotation.NonNull;
 
 @Entity(tableName = "news_item")
 public class NewsItem {
+    @NonNull
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
 
-    @NonNull
     private String author;
     private String title;
     private String description;
@@ -52,24 +52,36 @@ public class NewsItem {
         return this.author;
     }
 
+    public void setAuthor(String author) { this.author = author; }
+
     public String getTitle() {
         return this.title;
     }
+
+    public void setTitle(String title) { this.title = title; }
 
     public String getDescription() {
         return this.description;
     }
 
+    public void setDescription(String description) { this.description = description; }
+
     public String getUrl() {
         return this.url;
     }
+
+    public void setUrl(String url) { this.url = url; }
 
     public String getUrlToImage() {
         return this.urlToImage;
     }
 
+    public void setUrlToImage(String urlToImage) { this.urlToImage = urlToImage; }
+
     public String getPublishedAt() {
         return this.publishedAt;
     }
+
+    public void setPublishedAt(String publishedAt) { this.publishedAt = publishedAt; }
 
 }
