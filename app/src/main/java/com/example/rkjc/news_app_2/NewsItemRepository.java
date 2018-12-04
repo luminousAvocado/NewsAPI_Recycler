@@ -13,118 +13,69 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NewsItemRepository {
+
     private NewsItemDao mNewsItemDao;
     private LiveData<List<NewsItem>> mAllNews;
+    private NewsItemRoomDatabase db;
 
     public NewsItemRepository(Application application) {
-        NewsItemRoomDatabase db = NewsItemRoomDatabase.getDatabase(application.getApplicationContext());
+        db = NewsItemRoomDatabase.getDatabase(application.getApplicationContext());
         mNewsItemDao = db.newsDao();
         mAllNews = mNewsItemDao.loadAllNewsItems();
+        // ANOTHER
+        getDataAsyncCall();
     }
 
-    LiveData<List<NewsItem>> loadAllNewsItems() {
+    LiveData<List<NewsItem>> getAllNewsItems() {
         return mAllNews;
     }
 
-    public void insert(List<NewsItem> items) {
-        new insertAsyncTask(mNewsItemDao).execute(items);
+    public void getDataAsyncCall() {
+        new getDataAsyncTask(mNewsItemDao).execute();
     }
 
-    public void clearAll(List<NewsItem> items) {
-        new clearAllAsyncTask(mNewsItemDao).execute(items);
-    }
+    private static class getDataAsyncTask extends AsyncTask<Void, Void, Void> {
+        private NewsItemDao mAsyncTaskNewsDao;
 
-    // EDIT
-    public ArrayList<NewsItem> syncDb(Context context) {
-        ArrayList<NewsItem> result = null;
-        URL url = NetworkUtils.buildURL();
-        newsApiRequest req = new newsApiRequest(mNewsItemDao);
-        req.execute(url);
-
-        return result;
-    }
-
-    // EDIT
-    public void getNewsDb() {
-        new databaseASync(mNewsItemDao);
-    }
-
-    // EDIT
-    private static class newsApiRequest extends AsyncTask<URL, NewsItemDao, String> {
-        String results = null;
-        ArrayList<NewsItem> news = new ArrayList<>();
-
-        private NewsItemDao mAsyncTaskDao;
-
-        newsApiRequest(NewsItemDao dao) {
-            mAsyncTaskDao = dao;
+        getDataAsyncTask(NewsItemDao dao) {
+            mAsyncTaskNewsDao = dao;
         }
 
         @Override
-        protected String doInBackground(URL... urls) {
+        protected Void doInBackground(final Void... params) {
+            mAsyncTaskNewsDao.loadAllNewsItems();
+            return null;
+        }
+    }
+
+    public void sync(Context context) {
+        URL url = NetworkUtils.buildURL();
+        new syncDataAsyncTask(db).execute(url);
+    }
+
+    protected static class syncDataAsyncTask extends AsyncTask<URL, Void, String> {
+        private final NewsItemDao mDao;
+        private List<NewsItem> mNewsItems = new ArrayList<NewsItem>();
+
+        syncDataAsyncTask(NewsItemRoomDatabase db) {
+            mDao = db.newsDao();
+        }
+
+        @Override
+        protected String doInBackground(final URL... url) {
+            mDao.clearAll();
+            String results = "";
+
             try {
-                results = NetworkUtils.getResponseFromHttpUrl(urls[0]);
-            } catch (IOException e) {
+                results = NetworkUtils.getResponseFromHttpUrl(url[0]);
+            } catch(IOException e) {
                 e.printStackTrace();
             }
 
-            if(results != null && !results.equals("")) {
-                mAsyncTaskDao.clearAll();
-                ArrayList<NewsItem> news = JsonUtils.parseNews(results);
-                mAsyncTaskDao.insert(news);
-                mAsyncTaskDao.loadAllNewsItems();
-            }
+            mNewsItems = JsonUtils.parseNews(results);
+            mDao.insert(mNewsItems);
 
-            return null;
-        }
-
-        private ArrayList<NewsItem> getItem() {
-            return news;
-        }
-    }
-
-    // EDIT
-    private static class databaseASync extends AsyncTask<List<NewsItem>, Void, Void> {
-        private NewsItemDao mAsyncTaskDao;
-
-        databaseASync(NewsItemDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final List<NewsItem>... params) {
-            mAsyncTaskDao.loadAllNewsItems();
-            return null;
-        }
-    }
-
-    // EDIT
-    private static class insertAsyncTask extends AsyncTask<List<NewsItem>, Void, Void> {
-        private NewsItemDao mAsyncTaskDao;
-
-        insertAsyncTask(NewsItemDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final List<NewsItem>... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
-    }
-
-    // EDIT
-    private static class clearAllAsyncTask extends AsyncTask<List<NewsItem>, Void, Void> {
-        private NewsItemDao mAsyncTaskDao;
-
-        clearAllAsyncTask(NewsItemDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final List<NewsItem>... params) {
-            mAsyncTaskDao.clearAll();
-            return null;
+            return results;
         }
     }
 
