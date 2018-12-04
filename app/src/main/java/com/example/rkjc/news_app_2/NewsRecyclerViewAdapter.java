@@ -13,12 +13,13 @@ import android.widget.TextView;
 import android.view.View.OnClickListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsItemViewHolder> {
 
     Context mContext;
-    ArrayList<NewsItem> mNews;
+    List<NewsItem> mNews;
 
     public NewsRecyclerViewAdapter(Context context, ArrayList<NewsItem> news){
         this.mContext = context;

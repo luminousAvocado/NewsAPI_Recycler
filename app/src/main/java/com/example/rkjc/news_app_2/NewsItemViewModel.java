@@ -9,7 +9,7 @@ import java.util.List;
 
 public class NewsItemViewModel extends AndroidViewModel {
 
-    private NewsItemRepository newsItemRepo;
+    protected NewsItemRepository newsItemRepo;
     private LiveData<List<NewsItem>> news;
 
     public NewsItemViewModel(Application application) {
